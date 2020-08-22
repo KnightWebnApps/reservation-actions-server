@@ -22,9 +22,9 @@ const getNextAvailableReservation = async (req, res) => {
     })
   }
 
-  data.reservations.forEach(( res, i ) => {
+  data.reservations.forEach(( reservation, i ) => {
 
-    const end = moment(res.end_timestamp);
+    const end = moment(reservation.end_timestamp);
     const next =
       i === data.reservations.length
         ? null
