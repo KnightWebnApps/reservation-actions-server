@@ -2,7 +2,7 @@ const { execute, RESERVATION_BY_DAY, GET_SERVICE } = require("../helpers/utiliti
 const moment = require("moment");
 
 
-const getNextAvailableReservation = async (res, req) => {
+const getNextAvailableReservation = async (req, res) => {
   const { date, serviceId } = req.body.input.arg1;
 
   const { data: reservations, errors } = await execute({ date }, RESERVATION_BY_DAY);

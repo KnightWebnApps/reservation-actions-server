@@ -11,7 +11,7 @@ const validateReservation = async (req, res) => {
 
   const currentDate = moment().format("YYYY-MM-DD");
 
-  const { data: reservations, errors } = await execute(
+  const { data, errors } = await execute(
     { currentDate, userId },
     RESERVATIONS_QUERY
   );
@@ -26,7 +26,7 @@ const validateReservation = async (req, res) => {
   }
 
   // Validations
-  reservations.forEach((r) => {
+  data.reservations.forEach((r) => {
     console.log(r);
     if (r.date === date) {
       return res.status(400).json({
@@ -35,7 +35,7 @@ const validateReservation = async (req, res) => {
     }
   });
 
-  if (reservations.length >= 5) {
+  if (data.reservations.length >= 5) {
     res.status(400).json({
       message: "Limited to only 5 future reservations",
     });
