@@ -5,9 +5,9 @@ const moment = require("moment");
 const getNextAvailableReservation = async (req, res) => {
   const { date, serviceId } = req.body.input.arg1;
 
-  const { data: reservations, errors } = await execute({ date }, RESERVATION_BY_DAY);
+  const { data, errors } = await execute({ date }, RESERVATION_BY_DAY);
 
-  const { data: services_by_pk } = await execute({ serviceId }, GET_SERVICE);
+  const getServices = await execute({ serviceId }, GET_SERVICE);
 
   if(errors){
     console.log(errors)
@@ -16,23 +16,23 @@ const getNextAvailableReservation = async (req, res) => {
     })
   }
 
-  if(reservations.length === 0){
+  if(data.reservations.length === 0){
     res.status(200).json({
       nextAvailableReservation: `${date} at 8:00 AM is available`
     })
   }
 
-  reservations.forEach(( res, i ) => {
+  data.reservations.forEach(( res, i ) => {
 
     const end = moment(res.end_timestamp);
     const next =
-      i === reservations.length
+      i === data.reservations.length
         ? null
-        : moment(reservations[i + 1].start_timestamp);
+        : moment(data.reservations[i + 1].start_timestamp);
     console.log(end, next)
 
     if(next === null){
-      if(end.add(services_by_pk.time, 'm').isBefore(moment(`${date} 17:00:00`))){
+      if(end.add(getServices.data.services_by_pk.time, 'm').isBefore(moment(`${date} 17:00:00`))){
         res.status(200).json({
           nextAvailableReservation: `${date} at ${moment(res.end_timestamp).format('h:mm a')} is available`
         })
@@ -43,7 +43,7 @@ const getNextAvailableReservation = async (req, res) => {
       }
     }
 
-    if(next !== null && end.add(services_by_pk.time, 'm').isBefore(next)){
+    if(next !== null && end.add(getServices.data.services_by_pk.time, 'm').isBefore(next)){
       res.status(200).json({
         nextAvailableReservation: `${date} at ${end.format('h:mm a')} is available`
       })
