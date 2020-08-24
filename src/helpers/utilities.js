@@ -9,13 +9,11 @@ const RESERVATIONS_QUERY =
   "query($currentDate: date, $userId: String){ reservations (where:{ date: {_gte: $currentDate} userId: {_eq: $userId} }){ id date } }";
 
 const INSERT_RESERVATION = `
-  mutation ($appointment: tstzrange, $name: String, $date: date, $serviceId: uuid, $userId: String){
-    insert_reservations_one(object: {appointment: $appointment, date: $date, name: $name, serviceId: $serviceId, userId: $userId}) {
+  mutation ($appointment: tstzrange, $name: String, $date: date, $serviceId: String, $userId: String){
+    insert_reservations_one(object: {appointment: $appointment, date: $date, name: $name, selectedServiceId: $serviceId, userId: $userId}) {
       id
       start_timestamp
-      service {
-        name
-      }
+      selectedServiceId
     }
   }
   `;
