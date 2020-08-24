@@ -49,7 +49,7 @@ const validateReservation = async (req, res) => {
       INSERT_RESERVATION
     );
   
-    if (insertReservations.errors === null || insertReservations.errors === undefined) {
+    if (insertReservations.errors !== null || insertReservations.errors !== undefined) {
       console.log(errors)
       return res.status(400).json({
         message: "Error: " + insertReservations.errors[0].message,
