@@ -48,11 +48,13 @@ const validateReservation = async (req, res) => {
       { appointment, name, date, serviceId, userId },
       INSERT_RESERVATION
     );
+
+    console.log(insertReservations.errors);
   
-    if (insertReservations.errors !== null || insertReservations.errors !== undefined) {
-      console.log(errors)
+    if (!insertReservations.errors) {
+      console.log(insertReservations.errors);
       return res.status(400).json({
-        message: "Error: " + insertReservations.errors[0].message,
+        message: "Something happened",
       });
     } else {
       res.status(200).json({
