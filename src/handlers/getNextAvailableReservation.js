@@ -5,6 +5,12 @@ const moment = require("moment");
 const getNextAvailableReservation = async (req, res) => {
   const { date, serviceId } = req.body.input.arg1;
 
+  if(moment(date).isSameOrBefore(moment())){
+    res.status(200).json({
+      nextAvailableReservation: "Date must be tomorrow or later"
+    })
+  }
+
   const { data, errors } = await execute({ date }, RESERVATION_BY_DAY);
 
   const getServices = await execute({ serviceId }, GET_SERVICE);
@@ -18,7 +24,7 @@ const getNextAvailableReservation = async (req, res) => {
 
   if(data.reservations.length === 0){
     res.status(200).json({
-      nextAvailableReservation: `${date} at 8:00 AM is available`
+      nextAvailableReservation: `${date} is wide open between 8 and 5`
     })
   }
 
@@ -34,7 +40,7 @@ const getNextAvailableReservation = async (req, res) => {
     
     if(next !== null && end.add(getServices.data.services_by_pk.time, 'm').isBefore(next)){
       res.status(200).json({
-        nextAvailableReservation: `${date} at ${end.format('h:mm a')} is available`
+        nextAvailableReservation: `${date} at ${moment(reservation.end_timestamp).format('h:mm a')} is available`
       })
     }
 
