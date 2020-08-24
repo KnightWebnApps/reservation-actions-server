@@ -49,9 +49,8 @@ const validateReservation = async (req, res) => {
       INSERT_RESERVATION
     );
 
-    console.log(insertReservations.errors);
   
-    if (!insertReservations.errors) {
+    if (insertReservations.errors !== undefined) {
       console.log(insertReservations.errors);
       return res.status(400).json({
         message: "Something happened",
