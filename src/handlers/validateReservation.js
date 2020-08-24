@@ -26,11 +26,6 @@ const validateReservation = async (req, res) => {
   }
 
   // Validations
-  if (data.reservations.length >= 5) {
-    res.status(400).json({
-      message: "Limited to only 5 future reservations",
-    });
-  }
   
   data.reservations.forEach((r) => {
     console.log(r);
@@ -40,24 +35,31 @@ const validateReservation = async (req, res) => {
       });
     }
   });
+  
+  if (data.reservations.length >= 5) {
+    res.status(400).json({
+      message: "Limited to only 5 future reservations",
+    });
+  }else{
 
+    const insertReservations = await execute(
+      { appointment, name, date, serviceId, userId },
+      INSERT_RESERVATION
+    );
+  
+    if (!insertReservations.errors) {
+      console.log(errors)
+      return res.status(400).json({
+        message: "Error: " + insertReservations.errors[0].message,
+      });
+    } else {
+      res.status(200).json({
+        id: insertReservations.data.insert_reservations_one.id,
+      });
+    }
+  }
   // Insert Validated Reservation
 
-  const insertReservations = await execute(
-    { appointment, name, date, serviceId, userId },
-    INSERT_RESERVATION
-  );
-
-  if (!insertReservations.errors) {
-    console.log(errors)
-    return res.status(400).json({
-      message: "Error: " + insertReservations.errors[0].message,
-    });
-  } else {
-    res.status(200).json({
-      id: insertReservations.data.insert_reservations_one.id,
-    });
-  }
 };
 
 module.exports = validateReservation;
