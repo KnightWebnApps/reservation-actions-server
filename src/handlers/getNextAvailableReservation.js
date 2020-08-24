@@ -32,7 +32,7 @@ const getNextAvailableReservation = async (req, res) => {
 
     const end = moment(reservation.end_timestamp);
     const next = null;
-
+    console.log(i)
     i === data.reservations.length
       ? next = null
       : next = moment(data.reservations[i + 1].start_timestamp);
