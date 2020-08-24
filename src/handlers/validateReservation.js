@@ -26,6 +26,12 @@ const validateReservation = async (req, res) => {
   }
 
   // Validations
+  if (data.reservations.length >= 5) {
+    res.status(400).json({
+      message: "Limited to only 5 future reservations",
+    });
+  }
+  
   data.reservations.forEach((r) => {
     console.log(r);
     if (r.date === date) {
@@ -35,12 +41,6 @@ const validateReservation = async (req, res) => {
     }
   });
 
-  if (data.reservations.length >= 5) {
-    res.status(400).json({
-      message: "Limited to only 5 future reservations",
-    });
-  }
-
   // Insert Validated Reservation
 
   const insertReservations = await execute(
@@ -49,6 +49,7 @@ const validateReservation = async (req, res) => {
   );
 
   if (!insertReservations.errors) {
+    console.log(errors)
     return res.status(400).json({
       message: "Error: " + insertReservations.errors[0].message,
     });

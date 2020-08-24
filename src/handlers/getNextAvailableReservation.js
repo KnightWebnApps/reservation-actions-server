@@ -25,11 +25,18 @@ const getNextAvailableReservation = async (req, res) => {
   data.reservations.forEach(( reservation, i ) => {
 
     const end = moment(reservation.end_timestamp);
-    const next =
-      i === data.reservations.length
-        ? null
-        : moment(data.reservations[i + 1].start_timestamp);
+    const next = null;
+
+    i === data.reservations.length
+      ? next = null
+      : next = moment(data.reservations[i + 1].start_timestamp);
     console.log(end, next)
+    
+    if(next !== null && end.add(getServices.data.services_by_pk.time, 'm').isBefore(next)){
+      res.status(200).json({
+        nextAvailableReservation: `${date} at ${end.format('h:mm a')} is available`
+      })
+    }
 
     if(next === null){
       if(end.add(getServices.data.services_by_pk.time, 'm').isBefore(moment(`${date} 17:00:00`))){
@@ -43,11 +50,6 @@ const getNextAvailableReservation = async (req, res) => {
       }
     }
 
-    if(next !== null && end.add(getServices.data.services_by_pk.time, 'm').isBefore(next)){
-      res.status(200).json({
-        nextAvailableReservation: `${date} at ${end.format('h:mm a')} is available`
-      })
-    }
 
   })
 
